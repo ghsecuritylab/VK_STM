@@ -55,6 +55,7 @@
 #include "lwip/sockets.h"
 #include "mouse.h"
 #include "protocol.h"
+
 #include <string.h>
 
 /* USER CODE BEGIN Includes */
@@ -63,6 +64,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 extern State state;
+extern struct netif gnetif;
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c3;
 
@@ -143,7 +145,8 @@ QueueHandle_t xMailbox;
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+char addressStr[20];
+char portStr[10];
 int main(void)
 {
 
@@ -1315,6 +1318,17 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void const * argument)
 {
 	MX_LWIP_Init();
+	gnetif.ip_addr;
+	/*if(currentIp==0)
+	{
+		//no ip given
+	}
+	else
+	{
+		usprintf(currentIp, "IP %d.%d.%d.%d",
+				currentIp & 0xff, (currentIp >> 8) & 0xff,
+		(currentIp >> 16) & 0xff,currentIp >> 24);
+	}*/
 	MX_USB_DEVICE_Init();
 	state=disconnected;
 	int socket_fd,accept_fd;

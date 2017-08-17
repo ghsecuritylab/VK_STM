@@ -166,7 +166,7 @@ void keyboardReleaseAll(void)
 	{
 		keyReport.keys[i]=0;
 	}
-	sendReport(&keyReport);
+	keyboardSendReport(&keyReport);
 }
 size_t keyboardRelease(uint8_t k){
 	if(isNonPrintable(k))
@@ -209,7 +209,7 @@ KeyReport *addToReport(uint8_t k)
 			return &keyReport;
 	}
 	//add to the first empty
-	for(int i =0;i<=NR_OF_KEYS;++i)
+	for(int i =0;i<NR_OF_KEYS;++i)
 	{
 		if(keyReport.keys[i]==0x00){
 			keyReport.keys[i]=k;

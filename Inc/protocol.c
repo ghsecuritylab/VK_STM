@@ -35,7 +35,7 @@ int sendResponse(int socket,uint8_t response)
 }
 uint8_t checkLogin(char *data,size_t size)
 {
-	if(memcmp((void*)USER_ID,(void*)(data),size)==0)
+	if(memcmp((void*)USER_ID,(void*)(data+1),size-1)==0)
 		return LOGIN_OK;
 	else
 		return LOGIN_FAILED;
@@ -70,6 +70,8 @@ void handlePacket(int socket,uint8_t * data,size_t size)
 		break;
 	}
 	default:
+		keyboardReleaseAll();
+		mouseReleaseAll();
 		break;
 	}
 }
@@ -152,7 +154,7 @@ void handleLoggedState(int socket,uint8_t *data,size_t size)
 	}
 	default:
 	{
-		if(sendResponse(socket,REQUEST_FAILED)<0){
+		if(sendResponse(socket,REQUEST_FAILED)<0){ //////////////////////////////////////poprawione//////////////////////////////////
 			state=disconnected;
 		}
 	}
