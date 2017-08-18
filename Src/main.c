@@ -55,16 +55,32 @@
 #include "lwip/sockets.h"
 #include "mouse.h"
 #include "protocol.h"
+#include "tm_stm32_fonts.h"
+#include "tm_stm32_lcd.h"
+#include "tm_stm32_rcc.h"
+#include "lwip/dhcp.h"
 
+#define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))
 #include <string.h>
 
 /* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private variables ---------------------------------------------------------*/
 extern State state;
 extern struct netif gnetif;
+TM_FONT_SIZE_t FontSize;
+/* USER CODE END Includes */
+#if defined(STM32F7_DISCOVERY)
+char str[] = "This is LCD driver for F7-Discovery board";
+#elif defined(STM32F439_EVAL)
+char str[] = "This is LCD driver for F439-Eval board";
+#elif defined(STM32F429_DISCOVERY)
+char str[] = "F429-Discovery board";
+#endif
+
+
+/* Private variables ---------------------------------------------------------*/
+
+DMA2D_HandleTypeDef hdma2d;
+
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c3;
 
@@ -125,35 +141,46 @@ static void MX_TIM8_Init(void);
 static void MX_TIM12_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
+static void MX_DMA2D_Init(void);
 void StartDefaultTask(void const * argument);
 void StartUsbTask(void const * argument);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+static volatile uint8_t on =1;
                                 
                                 
                                 
-typedef struct xKeystroke{
-	TickType_t xTimeStamp;
-	uint8_t key;
-} Keystroke_t;
-QueueHandle_t xMailbox;
+
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
 /* USER CODE END PFP */
+void EXTI15_10_IRQHandler(void){
+	if(on){
+		TM_LCD_DisplayOff();
+		on=0;
+	}
+	else{
+		TM_LCD_DisplayOn();
+		on=1;
+	}
+	  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET)
+	  {
+	    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
+	    HAL_GPIO_EXTI_Callback(GPIO_PIN_11);
+	  }
 
+}
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-char addressStr[20];
-char portStr[10];
+
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -190,8 +217,22 @@ int main(void)
   MX_TIM12_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
+  MX_DMA2D_Init();
 
+  TM_RCC_InitSystem();
   /* USER CODE BEGIN 2 */
+  TM_LCD_Init();
+
+/* Fill LCD with color */
+TM_LCD_Fill(0x4321);
+
+/* Put string on the middle of LCD */
+TM_LCD_SetFont(&TM_Font_11x18);
+
+/* Get width and height of string */
+TM_FONT_GetStringSize(str, &FontSize, &TM_Font_11x18);
+
+/* Calculate middle of LCD */
 
   /* USER CODE END 2 */
 
@@ -210,11 +251,10 @@ int main(void)
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
- defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of usbTask */
- // osThreadDef(usbTask, StartUsbTask, osPriorityNormal, 0, 128);
- // usbTaskHandle = osThreadCreate(osThread(usbTask), NULL);
+
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -222,7 +262,6 @@ int main(void)
 
   /* Create the queue(s) */
   /* definition and creation of keystrokesQueue */
- xMailbox = xQueueCreate(1,sizeof(Keystroke_t));
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -331,6 +370,32 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+}
+
+/* DMA2D init function */
+static void MX_DMA2D_Init(void)
+{
+
+  hdma2d.Instance = DMA2D;
+  hdma2d.Init.Mode = DMA2D_M2M;
+  hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+  hdma2d.Init.OutputOffset = 0;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0;
+  //hdma2d.LayerCfg[1].AlphaInverted = DMA2D_REGULAR_ALPHA;
+  //hdma2d.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR;
+  if (HAL_DMA2D_Init(&hdma2d) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  if (HAL_DMA2D_ConfigLayer(&hdma2d, 1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* I2C1 init function */
@@ -620,7 +685,7 @@ static void MX_SAI2_Init(void)
   hsai_BlockB2.Init.MonoStereoMode = SAI_STEREOMODE;
   hsai_BlockB2.Init.CompandingMode = SAI_NOCOMPANDING;
   hsai_BlockB2.Init.TriState = SAI_OUTPUT_NOTRELEASED;
-  hsai_BlockB2.FrameInit.FrameLength = 8;
+  hsai_BlockB2.FrameInit.FrameLength = 24;
   hsai_BlockB2.FrameInit.ActiveFrameLength = 1;
   hsai_BlockB2.FrameInit.FSDefinition = SAI_FS_STARTFRAME;
   hsai_BlockB2.FrameInit.FSPolarity = SAI_FS_ACTIVE_LOW;
@@ -1107,6 +1172,7 @@ static void MX_GPIO_Init(void)
 
   GPIO_InitTypeDef GPIO_InitStruct;
 
+
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
@@ -1307,7 +1373,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
+  //Configure USER BUTTON
+  GPIO_InitStruct.Pin = GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull =GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
@@ -1317,24 +1390,19 @@ static void MX_GPIO_Init(void)
 /* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
-	MX_LWIP_Init();
-	gnetif.ip_addr;
-	/*if(currentIp==0)
-	{
-		//no ip given
-	}
-	else
-	{
-		usprintf(currentIp, "IP %d.%d.%d.%d",
-				currentIp & 0xff, (currentIp >> 8) & 0xff,
-		(currentIp >> 16) & 0xff,currentIp >> 24);
-	}*/
+	updateLCDStatus(disconnected,disconnected,"-","-","-","-");
+  /* init code for LWIP */
+	MX_LWIP_Init(); //user button on PI11
 	MX_USB_DEVICE_Init();
 	state=disconnected;
 	int socket_fd,accept_fd;
 	int rec_size;
 	socklen_t fromlen;
 	int addr_size;
+	char ipbuffer[17];
+	char portbuffer[7];
+	char sipbuffer[17];
+	char sportbuffer[7];
 	uint8_t data_buffer[80]; struct sockaddr_in sa,isa;
 	//create socket
 	socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -1354,11 +1422,18 @@ void StartDefaultTask(void const * argument)
 	addr_size = sizeof(isa);
 	for(;;)
 	{
+		struct dhcp *dhcp  =netif_dhcp_data(&gnetif);
+		sprintf(sipbuffer,"%s", inet_ntoa(dhcp->offered_ip_addr.addr));
+		sprintf(sportbuffer," %d", (int) ntohs(sa.sin_port));
+		updateLCDStatus(connected,disconnected,sipbuffer,sportbuffer,"-","-");
 		accept_fd = accept(socket_fd, (struct sockaddr*)&isa,&addr_size);
 		if(accept_fd < 0)
 		{
 			printf("accept failed\n");
 		}
+		sprintf(ipbuffer,"%s", inet_ntoa(isa.sin_addr));
+		sprintf(portbuffer," %d", (int) ntohs(isa.sin_port));
+		updateLCDStatus(connected,connected,sipbuffer,sportbuffer,ipbuffer,portbuffer);
 		state=waitingForHanshake;
 		while(1)
 		{
@@ -1379,8 +1454,8 @@ void StartDefaultTask(void const * argument)
 		}
 		close(accept_fd);
 	}
-	/* USER CODE END 5 */
 }
+	/* USER CODE END 5 */
 
 /* StartUsbTask function */
 void StartUsbTask(void const * argument)
@@ -1402,10 +1477,10 @@ void StartUsbTask(void const * argument)
 }
 
 /**
-  * @brief  Period elapsed callback in non 	 mos
+  * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM4 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.aaaaaa
+  * a global variable "uwTick" used as application time base.
   * @param  htim : TIM handle
   * @retval None
   */
