@@ -140,6 +140,7 @@ void initKeyboard()
 }
 size_t keyboardPress(uint8_t k)
 {
+	keyReport.id=1;
 	if(isNonPrintable(k)) //non printable
 	{
 		k=k-136;
@@ -161,6 +162,7 @@ size_t keyboardPress(uint8_t k)
 
 void keyboardReleaseAll(void)
 {
+	keyReport.id =1;
 	keyReport.modifiers=0;
 	for(int i=0;i<NR_OF_KEYS;++i)
 	{
@@ -190,6 +192,7 @@ size_t keyboardRelease(uint8_t k){
 	return k;
 }
 size_t keyboardWrite(uint8_t k){
+	keyReport.id=1;
 	uint8_t result = keyboardPress(k);
 	HAL_Delay(30);//meadmeadmd
 	keyboardRelease(k);
@@ -197,8 +200,10 @@ size_t keyboardWrite(uint8_t k){
 	return result;
 }
 //private
-void keyboardSendReport(KeyReport* keys){
-	 USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)keys, sizeof(KeyReport));
+uint8_t keyboardSendReport(KeyReport* keys){
+	HAL_Delay(30);
+	 return USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)keys, sizeof(KeyReport));
+
 }
 
 KeyReport *addToReport(uint8_t k)

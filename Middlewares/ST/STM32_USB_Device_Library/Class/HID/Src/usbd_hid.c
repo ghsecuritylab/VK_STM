@@ -157,8 +157,8 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIGN_
   0x00,         /*bAlternateSetting: Alternate setting*/
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
-  0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x00,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
+  0x01,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -216,45 +216,36 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
 
 __ALIGN_BEGIN static uint8_t HID_CUSTOM_ReportDesc[HID_CUSTOM_REPORT_DESC_SIZE]  __ALIGN_END = {
 		  // [modifier,reserved,Key1, Key2, Key3, Key4,Key6,Key7]
-		  0x05, 0x01,        //   Usage Page (Generic Desktop Ctrls)
+		  /*0x05, 0x01,        //   Usage Page (Generic Desktop Ctrls)
 		  0x09, 0x06,        //   Usage (Keyboard)
 		  0xA1, 0x01,        //   Collection (Application)
 		  0x85, 0x01, 		// report id 1
 		  0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
+		  0x75, 0x01,		 //   Report size (1) reserved
+		  0x95, 0x08,		 //	  Repot count - 8 bits
 		  0x19, 0xE0,        //   Usage Minimum (0xE0)
 		  0x29, 0xE7,        //   Usage Maximum (0xE7)
 		  0x15, 0x00,        //   Logical Minimum (0)
 		  0x25, 0x01,        //   Logical Maximum (1)
-		  0x75, 0x01,        //   Report Size (1)
-		  0x95, 0x08,        //   Report Count (8)
 		  0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position) //ok
 		  //reserved field
-		  0x75, 0x01,		 //   Report size (1) reserved
-		  0x95, 0x08,		 //	  Repot count - 8 bits
-		  0x81, 0x01,		 //	  input const
-		  //led output array
-		  0x95, 0x05, 		 //   report count 5 bits (Num lock, Caps lock, Scroll lock, Compose, Kana)
-		  0x75, 0x01,		 //   report size
-		  0x05, 0x08, 		 //   Usage page LEDs
-		  0x19, 0x01, 		 //   Usage minimum Num Lock
-		  0x29, 0x05,  		 //   Usage maximum Kana
-		  0x91, 0x02, 		 //   Output Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile
+		  //0x81, 0x01,		 //	  input const
 		  //padding
-		  0x95,0x03,
-		  0x75,0x01,
-		  0x91,0x01,//
+		  //0x95,0x03,
+		  //0x75,0x01,
+		  //0x91,0x01,//
 		  //key code array
 		  0x75, 0x06, 		 //	  report size 6 bytes (Keys)
 		  0x95, 0x08,		 //   report count
 		  0x15, 0x00,		 //   logical minimum
-		  0x25, 0x65,        //   logical maximum 101 keys
+		  0x25, 0x64,        //   logical maximum 101 keys
 		  0x05, 0x07,		 //   usage page Kbrd/Keypad
 		  0x19, 0x00,		 //   usage minimum
 		  0x29, 0x65,		 //   usage maxmium
 		  0x81, 0x00, 		 //   input selector(all items in this array will always have one value) Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position
 		  0xC0,				 //   end collaection
 		  /////////////////mouse////////////////////////////////
-		  		  0x05,0x01,		 //generic desktop controll
+		  		 0x05,0x01,		 //generic desktop controll
 		  		  0x09,0x02,		// usage -mouse
 		  		  0xA1,0x01,		// collection - application
 				  0x85, 0x02,		//report id 2
@@ -281,7 +272,58 @@ __ALIGN_BEGIN static uint8_t HID_CUSTOM_ReportDesc[HID_CUSTOM_REPORT_DESC_SIZE] 
 		  		  0x95,0x03,		//		report count -3
 		  		  0x81,0x06,		//		input data 6
 		  		  0xC0,				//	end collection
-		  		  0xC0				// end collection 52 bytes
+		  		  0xC0				// end collection 52 bytes*/
+		  // 78 bytes
+		  0x05, 0x01,        // Usage Page (Generic Desktop Ctrls)
+		  0x09, 0x06,        // Usage (Keyboard)
+		  0xA1, 0x01,        // Collection (Application)
+		  0x85, 0x01,        //   Report ID (1)
+		  0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
+		  0x75, 0x01,        //   Report Size (1)
+		  0x95, 0x08,        //   Report Count (8)
+		  0x19, 0xE0,        //   Usage Minimum (0xE0)
+		  0x29, 0xE7,        //   Usage Maximum (0xE7)
+		  0x15, 0x00,        //   Logical Minimum (0)
+		  0x25, 0x01,        //   Logical Maximum (1)
+		  0x81, 0x02,        //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+		  0x95, 0x06,        //   Report Count (3)
+		  0x75, 0x08,        //   Report Size (8)
+		  0x15, 0x00,        //   Logical Minimum (0)
+		  0x25, 0x64,        //   Logical Maximum (100)
+		  0x05, 0x07,        //   Usage Page (Kbrd/Keypad)
+		  0x19, 0x00,        //   Usage Minimum (0x00)
+		  0x29, 0x65,        //   Usage Maximum (0x65)
+		  0x81, 0x00,        //   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+		  0xC0,              // End Collection
+		  ////sssss
+	  		 0x05,0x01,		 //generic desktop controll
+	  		  0x09,0x02,		// usage -mouse
+	  		  0xA1,0x01,		// collection - application
+			  0x85, 0x02,		//report id 2
+	  		  0x09,0x01,		// 	usage - pointer
+	  		  0xA1,0x00,		//	collection - physical
+	  		  0x05,0x09,		//		usage page -button
+	  		  0x19,0x01,		//		usage minimum - button 1
+	  		  0x29,0x03,		//  	usage maximum - button3
+	  		  0x15,0x00,		//		logical minimum - 0
+	  		  0x25,0x01,		//		logical maximum - 1
+	  		  0x95,0x03,		//		report count - 3
+	  		  0x75,0x01,		//		report size - 1
+	  		  0x81,0x02,		//		input data 2
+	  		  0x95,0x01,		//		report count 1 padding
+	  		  0x75,0x05,		//		report size -5
+	  		  0x81,0x01,		// i	input constant
+	  		  0x05,0x01,		//		usage page: generic desktop
+	  		  0x09,0x30,		//		usage x
+	  		  0x09,0x31,		//		usage y
+	  		  0x09,0x38,		//		usage wheel
+	  		  0x15,0x81,		//		logical minimum -127
+	  		  0x25,0x7F,		//		logical maximum 127
+	  		  0x75,0x08,		//		report size - 8
+	  		  0x95,0x03,		//		report count -3
+	  		  0x81,0x06,		//		input data 6
+	  		  0xC0,				//	end collection
+	  		  0xC0				// end collection 52 bytes*/
 };
 
 /**

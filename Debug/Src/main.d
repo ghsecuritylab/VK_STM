@@ -46,6 +46,7 @@ Src/main.o: ../Src/main.c \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f746xx.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/FreeRTOSConfig.h \
@@ -129,7 +130,10 @@ Src/main.o: ../Src/main.c \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/attributes.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/main.h:
 
@@ -224,6 +228,8 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/st
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f746xx.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:
 
@@ -392,3 +398,9 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h:
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h:

@@ -123,7 +123,10 @@ Src/lcdUpdate.o: ../Src/lcdUpdate.c \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/ethernetif.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/lcdUpdate.h:
 
@@ -374,3 +377,9 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/So
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/ethernetif.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h:

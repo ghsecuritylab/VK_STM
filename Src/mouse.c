@@ -39,6 +39,7 @@ size_t mouseRelease(uint8_t key)
 }
 void mouseMove(int8_t X,int8_t Y,uint8_t angle)
 {
+	mouse.id=2;
 	mouse.X=X;
 	mouse.Y=Y;
 	mouse.Wheel=angle;
@@ -47,5 +48,6 @@ void mouseMove(int8_t X,int8_t Y,uint8_t angle)
 void mouseSendReport(MouseHID_t *report)
 {
 	USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)report, sizeof(MouseHID_t));
+	HAL_Delay(100);
 }
 

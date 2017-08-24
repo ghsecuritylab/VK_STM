@@ -48,6 +48,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f7xx_hal.h"
+#include "stm32f746xx.h"
+#include "stm32f7xx_hal_tim.h"
 #include "cmsis_os.h"
 #include "lwip.h"
 #include "usb_device.h"
@@ -59,7 +61,8 @@
 #include "tm_stm32_lcd.h"
 #include "tm_stm32_rcc.h"
 #include "lwip/dhcp.h"
-
+#include "stm32f7xx_hal_flash.h"
+#include "settings.h"
 #define netif_dhcp_data(netif) ((struct dhcp*)netif_get_client_data(netif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP))
 #include <string.h>
 
@@ -68,13 +71,6 @@ extern State state;
 extern struct netif gnetif;
 TM_FONT_SIZE_t FontSize;
 /* USER CODE END Includes */
-#if defined(STM32F7_DISCOVERY)
-char str[] = "This is LCD driver for F7-Discovery board";
-#elif defined(STM32F439_EVAL)
-char str[] = "This is LCD driver for F439-Eval board";
-#elif defined(STM32F429_DISCOVERY)
-char str[] = "F429-Discovery board";
-#endif
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -105,6 +101,8 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim8;
 TIM_HandleTypeDef htim12;
+TIM_HandleTypeDef htim13;
+TIM_HandleTypeDef htim14;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart6;
@@ -139,38 +137,21 @@ static void MX_TIM3_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_TIM12_Init(void);
+static void MX_TIM13_Init(void);
+static void MX_TIM14_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
 static void MX_DMA2D_Init(void);
 void StartDefaultTask(void const * argument);
-void StartUsbTask(void const * argument);
-
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-static volatile uint8_t on =1;
-                                
-                                
                                 
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+uint16_t VirtAddVarTab[NB_OF_VAR] = {0x5555, 0x6666, 0x7777};
+uint16_t VarDataTab[NB_OF_VAR] = {0, 0, 0};
+uint16_t VarValue,VarDataTmp = 0;
 
-/* USER CODE END PFP */
-void EXTI15_10_IRQHandler(void){
-	if(on){
-		TM_LCD_DisplayOff();
-		on=0;
-	}
-	else{
-		TM_LCD_DisplayOn();
-		on=1;
-	}
-	  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET)
-	  {
-	    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
-	    HAL_GPIO_EXTI_Callback(GPIO_PIN_11);
-	  }
-
-}
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -182,7 +163,7 @@ int main(void)
 
   /* USER CODE END 1 */
   /* MCU Configuration----------------------------------------------------------*/
-
+	SCB_EnableICache();
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
@@ -215,22 +196,27 @@ int main(void)
   MX_TIM5_Init();
   MX_TIM8_Init();
   MX_TIM12_Init();
+  MX_TIM13_Init();
+  MX_TIM14_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_DMA2D_Init();
 
-  TM_RCC_InitSystem();
+ TM_RCC_InitSystem();
   /* USER CODE BEGIN 2 */
-  TM_LCD_Init();
-
-/* Fill LCD with color */
+TM_LCD_Init();
 TM_LCD_Fill(0x4321);
-
-/* Put string on the middle of LCD */
 TM_LCD_SetFont(&TM_Font_11x18);
+TM_LCD_Puts("Loading OS ...");
+MX_USB_DEVICE_Init();
+HAL_TIM_Base_Start_IT(&htim13);
+////////////////////////////
 
-/* Get width and height of string */
-TM_FONT_GetStringSize(str, &FontSize, &TM_Font_11x18);
+
+//to repair - reset interrupt
+
+
+
 
 /* Calculate middle of LCD */
 
@@ -371,7 +357,42 @@ void SystemClock_Config(void)
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
+static void MX_TIM13_Init(void)
+{
+	  __HAL_RCC_TIM13_CLK_ENABLE();
+  htim13.Instance = TIM13;
+  htim13.Init.Prescaler = 9999;
+  htim13.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim13.Init.Period = 8399;
+  htim13.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim13.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim13) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+  HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
+  HAL_TIM_Base_Start_IT(&htim13);
+}
 
+
+/* TIM14 init function */
+static void MX_TIM14_Init(void)
+{
+	 __HAL_RCC_TIM14_CLK_ENABLE();
+  htim14.Instance = TIM14;
+  htim14.Init.Prescaler = 9999;
+  htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim14.Init.Period = 8399;
+  htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+  HAL_NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+}
 /* DMA2D init function */
 static void MX_DMA2D_Init(void)
 {
@@ -1375,7 +1396,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   //Configure USER BUTTON
   GPIO_InitStruct.Pin = GPIO_PIN_11;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull =GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
@@ -1390,25 +1411,24 @@ static void MX_GPIO_Init(void)
 /* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
-	updateLCDStatus(disconnected,disconnected,"-","-","-","-");
+	printLCD("Waiting for IP lease...");
   /* init code for LWIP */
-	MX_LWIP_Init(); //user button on PI11
-	MX_USB_DEVICE_Init();
+	MX_LWIP_Init();
 	state=disconnected;
 	int socket_fd,accept_fd;
-	int rec_size;
+	volatile int rec_size;
 	socklen_t fromlen;
 	int addr_size;
 	char ipbuffer[17];
 	char portbuffer[7];
 	char sipbuffer[17];
 	char sportbuffer[7];
-	uint8_t data_buffer[80]; struct sockaddr_in sa,isa;
-	//create socket
+	uint8_t data_buffer[30]; struct sockaddr_in sa,isa;
+	updateLCDStatus(disconnected,disconnected,"-","-","-","-");
 	socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if ( socket_fd < 0 )
 	{
-		printf("socket call failed");
+		printLCD("Socket initialization failed. Please restart");
 	}
 	memset(&sa, 0, sizeof(struct sockaddr_in));
 	sa.sin_family = AF_INET;
@@ -1417,6 +1437,7 @@ void StartDefaultTask(void const * argument)
 	if (bind(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1)
 	{
 		close(socket_fd);
+		printLCD("Socket bind failed. Please restart");
 	}
 	listen(socket_fd,5);
 	addr_size = sizeof(isa);
@@ -1429,7 +1450,7 @@ void StartDefaultTask(void const * argument)
 		accept_fd = accept(socket_fd, (struct sockaddr*)&isa,&addr_size);
 		if(accept_fd < 0)
 		{
-			printf("accept failed\n");
+			printLCD("Socket accepting failed.");
 		}
 		sprintf(ipbuffer,"%s", inet_ntoa(isa.sin_addr));
 		sprintf(portbuffer," %d", (int) ntohs(isa.sin_port));
@@ -1443,38 +1464,21 @@ void StartDefaultTask(void const * argument)
 				fprintf(stderr, "%s\n", strerror(errno));
 				break;
 			}
-			handlePacket(accept_fd,data_buffer,rec_size); //poprawic na rec size
+			handlePacket(accept_fd,data_buffer,rec_size);
 			if(state==disconnected)
 			{
 				sendResponse(accept_fd,DISCONNECT_REQ);
 				close(accept_fd);
 				break;
 			}
-			// xQueueSendToBack(xMailbox,(void*)&keystroke,portMAX_DELAY);
 		}
+		keyboardReleaseAll();
+		mouseReleaseAll();
 		close(accept_fd);
 	}
 }
 	/* USER CODE END 5 */
 
-/* StartUsbTask function */
-void StartUsbTask(void const * argument)
-{
-  /* USER CODE BEGIN StartUsbTask */
-  /* Infinite loop */
-	  MX_USB_DEVICE_Init();
- //Keystroke_t keystroke;
- initKeyboard();
- initMouse();
-  for(;;)
-  {
-	//xQueueReceive(xMailbox,&keystroke,portMAX_DELAY);
-	//keyboardWrite(keystroke.key);
-	  mouseMove(0,0,0);
-	osDelay(500);
-  }
-  /* USER CODE END StartUsbTask */
-}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

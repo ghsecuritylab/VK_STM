@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Src/eeprom.c \
 ../Src/ethernetif.c \
 ../Src/freertos.c \
 ../Src/keyboard.c \
@@ -11,6 +12,7 @@ C_SRCS += \
 ../Src/lwip.c \
 ../Src/main.c \
 ../Src/mouse.c \
+../Src/settings.c \
 ../Src/stm32f7xx_hal_msp.c \
 ../Src/stm32f7xx_hal_timebase_TIM.c \
 ../Src/stm32f7xx_it.c \
@@ -30,6 +32,7 @@ C_SRCS += \
 ../Src/usbd_desc.c 
 
 OBJS += \
+./Src/eeprom.o \
 ./Src/ethernetif.o \
 ./Src/freertos.o \
 ./Src/keyboard.o \
@@ -37,6 +40,7 @@ OBJS += \
 ./Src/lwip.o \
 ./Src/main.o \
 ./Src/mouse.o \
+./Src/settings.o \
 ./Src/stm32f7xx_hal_msp.o \
 ./Src/stm32f7xx_hal_timebase_TIM.o \
 ./Src/stm32f7xx_it.o \
@@ -56,6 +60,7 @@ OBJS += \
 ./Src/usbd_desc.o 
 
 C_DEPS += \
+./Src/eeprom.d \
 ./Src/ethernetif.d \
 ./Src/freertos.d \
 ./Src/keyboard.d \
@@ -63,6 +68,7 @@ C_DEPS += \
 ./Src/lwip.d \
 ./Src/main.d \
 ./Src/mouse.d \
+./Src/settings.d \
 ./Src/stm32f7xx_hal_msp.d \
 ./Src/stm32f7xx_hal_timebase_TIM.d \
 ./Src/stm32f7xx_it.d \

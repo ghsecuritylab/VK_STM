@@ -50,7 +50,6 @@ typedef struct
 {
   uint8_t id;
   uint8_t modifiers;
-  uint8_t reserved;
   uint8_t keys[NR_OF_KEYS];
 } KeyReport;
   void initKeyboard();
@@ -58,7 +57,7 @@ typedef struct
   size_t keyboardPress(uint8_t k);
   size_t keyboardRelease(uint8_t k);
   void keyboardReleaseAll(void);
-  void keyboardSendReport(KeyReport* keys);
+  uint8_t keyboardSendReport(KeyReport* keys);
   KeyReport* addToReport(uint8_t k);
   KeyReport* subtractFromReport(uint8_t k);
   uint8_t isAModifier(uint8_t k);

@@ -34,7 +34,7 @@ int  receieveFullPacket(int socket, void* buffer,size_t size, struct sockaddr *a
 void handlePacket(int socket,uint8_t * data,size_t size);
 int sendResponse(int socket,uint8_t response);
 uint8_t checkLogin(char *data,size_t size);
-void handleKeyboardRequest(uint8_t * data,size_t size);
+uint8_t handleKeyboardRequest(uint8_t * data,size_t size);
 void handleMouseRequest(uint8_t *data, size_t size);
 void handleConnectedState(int socket,uint8_t *data,size_t size);
 void handleLoggedState(int socket,uint8_t *data,size_t size);

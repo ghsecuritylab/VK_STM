@@ -8,7 +8,7 @@
 State state;
 int receieveFullPacket(int socket, void* buffer,size_t size, struct sockaddr *addr, socklen_t *length_ptr)
 {
-	 int packetSize;
+	volatile int packetSize;
 	 int recSize;
 	 uint8_t sizeBuffer;
 	packetSize = recvfrom(socket,(void*)&sizeBuffer, 1, MSG_WAITALL, addr, length_ptr);
@@ -40,16 +40,19 @@ uint8_t checkLogin(char *data,size_t size)
 	else
 		return LOGIN_FAILED;
 }
-void handleKeyboardRequest(uint8_t * data,size_t size)
+uint8_t handleKeyboardRequest(uint8_t * data,size_t size)
 {
+	taskENTER_CRITICAL();
 	KeyReport report;
-	memcpy(&report,&data[1],size-1);
-	keyboardSendReport(&report);
+	memcpy(&report,&data[1],size);
+	uint8_t ret=keyboardSendReport(&report);
+	taskEXIT_CRITICAL();
+	return ret;
 }
 void handleMouseRequest(uint8_t *data, size_t size)
 {
 	MouseHID_t report;
-	memcpy(&report,&data[1],size-1);
+	memcpy(&report,&data[1],size);
 	mouseSendReport(&report);
 }
 
@@ -138,7 +141,9 @@ void handleLoggedState(int socket,uint8_t *data,size_t size)
 	}
 	case KEYBOARD_WRITE_REQ:
 	{
-		handleKeyboardRequest(data,size);
+		if(handleKeyboardRequest(data,size)==USBD_FAIL){
+			state=disconnected;
+			break;}
 		if(sendResponse(socket,REQUEST_OK)<0){
 			state=disconnected;
 		}
