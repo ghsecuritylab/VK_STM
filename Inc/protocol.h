@@ -13,6 +13,7 @@
 #include "mouse.h"
 #include "lwip/sockets.h"
 #include "lwip.h"
+#include "settings.h"
 
 
 
@@ -20,6 +21,7 @@
 #define LOGIN_REQ 0x10
 #define KEYBOARD_WRITE_REQ 0x30
 #define MOUSE_WRITE_REQ 0x40
+#define STATIC_IP_REQ 0x45
 #define DISCONNECT_REQ 0xF0
 #define UNSUPORTED_PROTOCOL 0xF1
 #define LOGIN_FAILED 0xF2
@@ -36,6 +38,7 @@ int sendResponse(int socket,uint8_t response);
 uint8_t checkLogin(char *data,size_t size);
 uint8_t handleKeyboardRequest(uint8_t * data,size_t size);
 void handleMouseRequest(uint8_t *data, size_t size);
+void handleIPChangeRequest(uint8_t *data, size_t size);
 void handleConnectedState(int socket,uint8_t *data,size_t size);
 void handleLoggedState(int socket,uint8_t *data,size_t size);
 void handleWaitingState(int socket,uint8_t *data,size_t size);

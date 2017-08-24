@@ -49,6 +49,16 @@ uint8_t handleKeyboardRequest(uint8_t * data,size_t size)
 	taskEXIT_CRITICAL();
 	return ret;
 }
+void handleIPChangeRequest(uint8_t *data, size_t size)
+{
+	uint32_t ip=0;
+	uint32_t mask=0;
+	uint32_t gate=0;
+	ip |= ((data[2]<<24)|(data[3]<<16)|(data[4]<<8)|data[5]);
+	mask |= ((data[6]<<24)|(data[7]<<16)|(data[8]<<8)|data[9]);
+	gate |= ((data[10]<<24)|(data[11]<<16)|(data[12]<<8)|data[13]);
+	writeEEPROMSettings(data[1],ip,mask,gate);
+}
 void handleMouseRequest(uint8_t *data, size_t size)
 {
 	MouseHID_t report;
@@ -157,6 +167,11 @@ void handleLoggedState(int socket,uint8_t *data,size_t size)
 		}
 		break;
 	}
+	case STATIC_IP_REQ:
+	handleIPChangeRequest(data,size);
+	state=disconnected;
+	HAL_NVIC_SystemReset();
+	break;
 	default:
 	{
 		if(sendResponse(socket,REQUEST_FAILED)<0){ //////////////////////////////////////poprawione//////////////////////////////////

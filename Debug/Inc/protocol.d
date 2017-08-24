@@ -111,7 +111,10 @@ Inc/protocol.o: ../Inc/protocol.c ../Inc/protocol.h ../Inc/keyboard.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../Inc/ethernetif.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
+ ../Inc/settings.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
+ ../Inc/eeprom.h
 
 ../Inc/protocol.h:
 
@@ -342,3 +345,9 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/FreeRTOS/So
 ../Inc/ethernetif.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
+
+../Inc/settings.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
+
+../Inc/eeprom.h:

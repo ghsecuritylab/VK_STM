@@ -103,13 +103,13 @@ void MX_LWIP_Init(void)
 	  GATEWAY_ADDRESS[3] = 0;*/
   /* Initilialize the LwIP stack with RTOS */
   tcpip_init( NULL, NULL );
-  I/*P4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
+  /*P4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
   IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
   IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);*/
   /* IP addresses initialization with DHCP (IPv4) */
-  ipaddr.addr = 0;//readIPSettings();
-  netmask.addr =0;// readNetMaskSettings();
-  gw.addr = 0;//readGateWaySettings();
+  ipaddr.addr = readIPSettings();
+  netmask.addr =readNetMaskSettings();
+  gw.addr = readGateWaySettings();
 
   /* add the network interface (IPv4/IPv6) with RTOS */
   netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
@@ -129,7 +129,7 @@ void MX_LWIP_Init(void)
   }
 
   /* Start DHCP negotiation for a network interface (IPv4) */
- // if(readModeSettings()==dhcpMode)
+  if(readModeSettings()==dhcpMode)
 	  while(dhcp_start(&gnetif)!= ERR_OK);
 
 /* USER CODE BEGIN 3 */
