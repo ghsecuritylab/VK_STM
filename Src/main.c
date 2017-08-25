@@ -1411,7 +1411,8 @@ static void MX_GPIO_Init(void)
 /* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
-	printLCD("Waiting for IP lease...");
+	if(readModeSettings())
+		printLCD("Settings: DHCP\nWaiting for IP lease...");
   /* init code for LWIP */
 	MX_LWIP_Init();
 	state=disconnected;
@@ -1433,7 +1434,7 @@ void StartDefaultTask(void const * argument)
 	memset(&sa, 0, sizeof(struct sockaddr_in));
 	sa.sin_family = AF_INET;
 	sa.sin_addr.s_addr = INADDR_ANY;//inet_addr(SENDER_IP_ADDR);
-	sa.sin_port = htons(21);
+	sa.sin_port = htons(readPortSettings());
 	if (bind(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1)
 	{
 		close(socket_fd);
@@ -1444,7 +1445,9 @@ void StartDefaultTask(void const * argument)
 	for(;;)
 	{
 		struct dhcp *dhcp  =netif_dhcp_data(&gnetif);
-		sprintf(sipbuffer,"%s", inet_ntoa(dhcp->offered_ip_addr.addr));
+		uint32_t ipz =readIPSettings();
+		ipz =htonl(ipz);
+		sprintf(sipbuffer,"%s",readModeSettings()? inet_ntoa(dhcp->offered_ip_addr.addr):inet_ntoa(ipz));
 		sprintf(sportbuffer," %d", (int) ntohs(sa.sin_port));
 		updateLCDStatus(connected,disconnected,sipbuffer,sportbuffer,"-","-");
 		accept_fd = accept(socket_fd, (struct sockaddr*)&isa,&addr_size);

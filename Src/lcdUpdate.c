@@ -34,8 +34,10 @@ void TIM8_TRG_COM_TIM14_IRQHandler(){
         	resetTimer++;
         	if(resetTimer>=RESET_TIMEOUT){
         		TM_LCD_DisplayOn();
-        		writeEEPROMSettings(1,0,0,0);
-        		printLCD("Restored default settings");
+        		writeEEPROMSettings(1,0,21,0,0);
+        		printLCD("Restored default settings. \nRestart pending...");
+        		HAL_Delay(2000);
+        		HAL_NVIC_SystemReset();
         		}
         }
         	}
@@ -96,6 +98,10 @@ void updateLCDStatus(State serverState, State clientState,char *serverIP,char *s
 {
 	   TM_LCD_Fill(0x4321);
 	   TM_LCD_SetXY(0,0);
+	   if(readModeSettings())
+		   TM_LCD_Puts("Mode: DHCP\n");
+	   else
+		   TM_LCD_Puts("Mode: STATIC\n");
 	   TM_LCD_Puts(serverStatus);
 	   switch(serverState)
 	   {

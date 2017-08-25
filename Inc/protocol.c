@@ -51,13 +51,17 @@ uint8_t handleKeyboardRequest(uint8_t * data,size_t size)
 }
 void handleIPChangeRequest(uint8_t *data, size_t size)
 {
+	uint8_t mode = 0;
 	uint32_t ip=0;
-	uint32_t mask=0;
-	uint32_t gate=0;
-	ip |= ((data[2]<<24)|(data[3]<<16)|(data[4]<<8)|data[5]);
-	mask |= ((data[6]<<24)|(data[7]<<16)|(data[8]<<8)|data[9]);
-	gate |= ((data[10]<<24)|(data[11]<<16)|(data[12]<<8)|data[13]);
-	writeEEPROMSettings(data[1],ip,mask,gate);
+	 uint16_t port = 0;
+	 uint32_t mask=0;
+	 uint32_t gate=0;
+	 mode = data[1];
+	ip |= ((data[2])|(data[3]<<8)|(data[4]<<16)|(data[5]<<24));
+	port |= ((data[6])| (data[7]<<8));
+	mask |= ((data[8])|(data[9]<<8)|(data[10]<<16)|(data[11]<<24));
+	gate |= ((data[12])|(data[13]<<8)|(data[14]<<16)|(data[15]<<24));
+	writeEEPROMSettings(data[1],ip,port,mask,gate);
 }
 void handleMouseRequest(uint8_t *data, size_t size)
 {

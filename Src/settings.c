@@ -6,11 +6,12 @@
  */
 #include "settings.h"
 
-HAL_StatusTypeDef writeEEPROMSettings(uint8_t mode, uint32_t ip,uint32_t mask,uint32_t gate){
+HAL_StatusTypeDef writeEEPROMSettings(uint8_t mode, uint32_t ip,uint16_t port,uint32_t mask,uint32_t gate){
 	HAL_FLASH_Unlock();
 	FLASH_Erase_Sector(FLASH_SECTOR_4,VOLTAGE_RANGE);
 	HAL_FLASH_Lock();
 	writeModeSettings(mode);
+	writePortSettings(port);
 	writeIPSettings(ip);
 	writeNetMaskSettings(mask);
 	return writeGateWaySettings(gate);
@@ -35,6 +36,16 @@ HAL_StatusTypeDef writeEEPROMDoubleWord(uint32_t address, uint32_t data)
 
     return status;
 }
+HAL_StatusTypeDef writeEEPROMWord(uint32_t address, uint16_t data)
+ {
+    HAL_StatusTypeDef  status;
+    address = address + EEPROM_START_ADDR;
+    HAL_FLASH_Unlock();  //Unprotect the EEPROM to allow writing
+    status = HAL_FLASH_Program (FLASH_TYPEPROGRAM_HALFWORD, address, data);
+    HAL_FLASH_Lock();   // Reprotect the EEPROM
+
+    return status;
+}
 uint8_t readEEPROMByte(uint32_t address) {
     uint32_t tmp = 0;
     address = address + EEPROM_START_ADDR;
@@ -46,6 +57,20 @@ uint32_t readEEPROMDoubleWord(uint32_t address) {
     address = address + EEPROM_START_ADDR;
     tmp = *(__IO uint32_t*)address;
     return tmp;
+}
+uint32_t readEEPROMWord(uint32_t address) {
+    uint16_t tmp = 0;
+    address = address + EEPROM_START_ADDR;
+    tmp = *(__IO uint16_t*)address;
+    return tmp;
+}
+uint16_t readPortSettings()
+{
+	return readEEPROMWord(PORT_OFFSET);
+}
+HAL_StatusTypeDef writePortSettings(uint16_t port)
+{
+	return writeEEPROMWord(PORT_OFFSET,port);
 }
 uint8_t readNrOfPowerOn()
 {

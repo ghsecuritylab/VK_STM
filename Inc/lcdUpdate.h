@@ -13,7 +13,7 @@
 #include "settings.h"
 #include <stdbool.h>
 
-#define SCREEN_TIMEOUT 10
+#define SCREEN_TIMEOUT 300
 #define RESET_TIMEOUT 5
 
 extern TIM_HandleTypeDef htim13;
