@@ -8,15 +8,18 @@
 State state;
 int receieveFullPacket(int socket, void* buffer,size_t size, struct sockaddr *addr, socklen_t *length_ptr)
 {
-	volatile int packetSize;
-	 int recSize;
-	 uint8_t sizeBuffer;
+	static uint8_t packetSize;
+	static uint8_t recSize;
+	static  uint8_t sizeBuffer;
 	packetSize = recvfrom(socket,(void*)&sizeBuffer, 1, MSG_WAITALL, addr, length_ptr);
 	if (packetSize <=0)
 	{
-		fprintf(stderr, "%s\n", strerror(errno));
 		return -1;
 	}
+	/*if(sizeBuffer>size)
+	{
+		return -1;
+	}*/
 	recSize = recvfrom(socket,(void*)buffer, sizeBuffer,MSG_WAITALL, addr, length_ptr);
 	if(recSize<packetSize)
 	{
@@ -51,12 +54,11 @@ uint8_t handleKeyboardRequest(uint8_t * data,size_t size)
 }
 void handleIPChangeRequest(uint8_t *data, size_t size)
 {
-	uint8_t mode = 0;
+
 	uint32_t ip=0;
 	 uint16_t port = 0;
 	 uint32_t mask=0;
 	 uint32_t gate=0;
-	 mode = data[1];
 	ip |= ((data[2])|(data[3]<<8)|(data[4]<<16)|(data[5]<<24));
 	port |= ((data[6])| (data[7]<<8));
 	mask |= ((data[8])|(data[9]<<8)|(data[10]<<16)|(data[11]<<24));
@@ -171,11 +173,12 @@ void handleLoggedState(int socket,uint8_t *data,size_t size)
 		}
 		break;
 	}
-	case STATIC_IP_REQ:
+	case STATIC_IP_REQ:{
 	handleIPChangeRequest(data,size);
 	state=disconnected;
 	HAL_NVIC_SystemReset();
 	break;
+	}
 	default:
 	{
 		if(sendResponse(socket,REQUEST_FAILED)<0){ //////////////////////////////////////poprawione//////////////////////////////////

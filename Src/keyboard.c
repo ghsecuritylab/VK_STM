@@ -134,11 +134,11 @@ uint8_t const keymap[KSIZE]={
 };
 
 KeyReport keyReport;
-void initKeyboard()
+inline void initKeyboard()
 {
 	keyReport.id=1;
 }
-size_t keyboardPress(uint8_t k)
+inline size_t keyboardPress(uint8_t k)
 {
 	keyReport.id=1;
 	if(isNonPrintable(k)) //non printable
@@ -160,7 +160,7 @@ size_t keyboardPress(uint8_t k)
 	return k;
 }
 
-void keyboardReleaseAll(void)
+inline void keyboardReleaseAll(void)
 {
 	keyReport.id =1;
 	keyReport.modifiers=0;
@@ -170,7 +170,7 @@ void keyboardReleaseAll(void)
 	}
 	keyboardSendReport(&keyReport);
 }
-size_t keyboardRelease(uint8_t k){
+inline size_t keyboardRelease(uint8_t k){
 	if(isNonPrintable(k))
 	{
 		k=k-136;
@@ -191,19 +191,17 @@ size_t keyboardRelease(uint8_t k){
 	keyboardSendReport(subtractFromReport(k));
 	return k;
 }
-size_t keyboardWrite(uint8_t k){
+inline size_t keyboardWrite(uint8_t k){
 	keyReport.id=1;
 	uint8_t result = keyboardPress(k);
-	HAL_Delay(30);//meadmeadmd
+	//HAL_Delay(30);//meadmeadmd
 	keyboardRelease(k);
-	HAL_Delay(30);//there has to be delay between changes
+	//HAL_Delay(30);//there has to be delay between changes
 	return result;
 }
 //private
-uint8_t keyboardSendReport(KeyReport* keys){
-	HAL_Delay(30);
+inline uint8_t keyboardSendReport(KeyReport* keys){
 	 return USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)keys, sizeof(KeyReport));
-
 }
 
 KeyReport *addToReport(uint8_t k)
@@ -222,9 +220,6 @@ KeyReport *addToReport(uint8_t k)
 		}
 	}
 	return &keyReport;
-	/*if(keyReport.keys[0]==k || keyReport.keys[1]==k || keyReport.keys[2]==k|| keyReport[3]==k
-			|| keyReport.keys[4]==k||keyReport.keys[5]==k)
-		return;*/
 }
 KeyReport* subtractFromReport(uint8_t k){
 	for(int i =0; i<NR_OF_KEYS;++i){
@@ -233,16 +228,16 @@ KeyReport* subtractFromReport(uint8_t k){
 	}
 	return &keyReport;
 }
-uint8_t isAModifier(uint8_t k){
+inline uint8_t isAModifier(uint8_t k){
 	return k>=128;
 }
-uint8_t isNonPrintable(uint8_t k){
+inline uint8_t isNonPrintable(uint8_t k){
 	return k>=136;
 }
-uint8_t isPrintableReachedWithShift(uint8_t k){
+inline uint8_t isPrintableReachedWithShift(uint8_t k){
 	return (k & SHIFT);
 }
-uint8_t stripModifiers(uint8_t k)
+inline uint8_t stripModifiers(uint8_t k)
 {
 	uint8_t p = k;
 	p &= 0x7F;

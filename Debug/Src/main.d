@@ -115,7 +115,16 @@ Src/main.o: ../Src/main.c \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/sockets.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/inet.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/errno.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/mouse.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/lcdUpdate.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_lcd.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/stm32fxxx_hal.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/defines.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_gpio.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_sdram.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/attributes.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/protocol.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/keyboard.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/mouse.h \
@@ -123,16 +132,10 @@ Src/main.o: ../Src/main.c \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/mouse.h \
+ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/protocol.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/stm32fxxx_hal.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/defines.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_gpio.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_lcd.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_sdram.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/attributes.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h \
- C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h \
  C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/settings.h
 
@@ -368,7 +371,25 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/in
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Middlewares/Third_Party/LwIP/src/include/lwip/errno.h:
 
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/mouse.h:
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/lcdUpdate.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_lcd.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/stm32fxxx_hal.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/defines.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_gpio.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_sdram.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/attributes.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/protocol.h:
 
@@ -384,25 +405,13 @@ C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Drivers/STM32F7xx_HAL_Driver/Inc/st
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/eeprom.h:
 
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/mouse.h:
+
+C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/protocol.h:
+
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/stm32fxxx_hal.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/defines.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_gpio.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_lcd.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_sdram.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/attributes.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_fonts.h:
-
-C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_dma2d_graphic.h:
 
 C:/Users/PR6/workspace/AB/STM/Cube/lan3_wlcd/Inc/tm_stm32_rcc.h:
 

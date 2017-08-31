@@ -55,6 +55,7 @@
 #include "usb_device.h"
 #include "keyboard.h"
 #include "lwip/sockets.h"
+#include "lcdUpdate.h"
 #include "mouse.h"
 #include "protocol.h"
 #include "tm_stm32_fonts.h"
@@ -372,7 +373,6 @@ static void MX_TIM13_Init(void)
   }
   HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
-  HAL_TIM_Base_Start_IT(&htim13);
 }
 
 
@@ -1459,6 +1459,8 @@ void StartDefaultTask(void const * argument)
 		sprintf(portbuffer," %d", (int) ntohs(isa.sin_port));
 		updateLCDStatus(connected,connected,sipbuffer,sportbuffer,ipbuffer,portbuffer);
 		state=waitingForHanshake;
+		HAL_NVIC_DisableIRQ(TIM8_UP_TIM13_IRQn);
+		HAL_NVIC_DisableIRQ(TIM8_TRG_COM_TIM14_IRQn);
 		while(1)
 		{
 			rec_size = receieveFullPacket(accept_fd,(void*)data_buffer, sizeof (data_buffer), (struct sockaddr*)&sa, &fromlen); //recvfrom(accept_fd, (void*)data_buffer, sizeof (data_buffer), 0, (struct sockaddr*)&sa, &fromlen);
@@ -1475,6 +1477,8 @@ void StartDefaultTask(void const * argument)
 				break;
 			}
 		}
+		HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
+		HAL_NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
 		keyboardReleaseAll();
 		mouseReleaseAll();
 		close(accept_fd);
