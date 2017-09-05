@@ -201,6 +201,7 @@ inline size_t keyboardWrite(uint8_t k){
 }
 //private
 inline uint8_t keyboardSendReport(KeyReport* keys){
+	 HAL_Delay(30);
 	 return USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)keys, sizeof(KeyReport));
 }
 

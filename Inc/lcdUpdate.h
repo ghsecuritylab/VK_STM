@@ -13,7 +13,7 @@
 #include "settings.h"
 #include <stdbool.h>
 
-#define SCREEN_TIMEOUT 300
+#define SCREEN_TIMEOUT 20
 #define RESET_TIMEOUT 5
 
 extern TIM_HandleTypeDef htim13;
@@ -33,5 +33,7 @@ void turnOnDisplay();
 void turnOffDisplay();
 bool isDisplayOn();
 void printLCD(char * str);
+void EnableTimers();
+void DisableTimers();
 
 #endif /* LCDUPDATE_H_ */

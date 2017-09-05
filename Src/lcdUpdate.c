@@ -65,6 +65,15 @@ void EXTI15_10_IRQHandler(void){
         }
 	  }
 }
+void EnableTimers()
+{
+	HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
+	HAL_NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+}
+void DisableTimers(){
+	HAL_NVIC_DisableIRQ(TIM8_UP_TIM13_IRQn);
+	HAL_NVIC_DisableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+}
 void turnOnDisplay()
 {
 	if(!isDisplayOn())

@@ -90,7 +90,6 @@ RTC_HandleTypeDef hrtc;
 SAI_HandleTypeDef hsai_BlockA2;
 SAI_HandleTypeDef hsai_BlockB2;
 
-SD_HandleTypeDef hsd1;
 
 SPDIFRX_HandleTypeDef hspdif;
 
@@ -104,9 +103,6 @@ TIM_HandleTypeDef htim8;
 TIM_HandleTypeDef htim12;
 TIM_HandleTypeDef htim13;
 TIM_HandleTypeDef htim14;
-
-UART_HandleTypeDef huart1;
-UART_HandleTypeDef huart6;
 
 SDRAM_HandleTypeDef hsdram1;
 
@@ -129,7 +125,6 @@ static void MX_LTDC_Init(void);
 static void MX_QUADSPI_Init(void);
 static void MX_RTC_Init(void);
 static void MX_SAI2_Init(void);
-static void MX_SDMMC1_SD_Init(void);
 static void MX_SPDIFRX_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TIM1_Init(void);
@@ -140,8 +135,6 @@ static void MX_TIM8_Init(void);
 static void MX_TIM12_Init(void);
 static void MX_TIM13_Init(void);
 static void MX_TIM14_Init(void);
-static void MX_USART1_UART_Init(void);
-static void MX_USART6_UART_Init(void);
 static void MX_DMA2D_Init(void);
 void StartDefaultTask(void const * argument);
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
@@ -188,7 +181,6 @@ int main(void)
   MX_QUADSPI_Init();
   MX_RTC_Init();
   MX_SAI2_Init();
-  MX_SDMMC1_SD_Init();
   MX_SPDIFRX_Init();
   MX_SPI2_Init();
   MX_TIM1_Init();
@@ -199,8 +191,6 @@ int main(void)
   MX_TIM12_Init();
   MX_TIM13_Init();
   MX_TIM14_Init();
-  MX_USART1_UART_Init();
-  MX_USART6_UART_Init();
   MX_DMA2D_Init();
 
  TM_RCC_InitSystem();
@@ -722,25 +712,6 @@ static void MX_SAI2_Init(void)
 
 }
 
-/* SDMMC1 init function */
-static void MX_SDMMC1_SD_Init(void)
-{
-
-  hsd1.Instance = SDMMC1;
-  hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-  hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
-  hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-  hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
-  hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd1.Init.ClockDiv = 0;
-  if (HAL_SD_Init(&hsd1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B);
-
-}
 
 /* SPDIFRX init function */
 static void MX_SPDIFRX_Init(void)
@@ -1076,47 +1047,6 @@ static void MX_TIM12_Init(void)
 
 }
 
-/* USART1 init function */
-static void MX_USART1_UART_Init(void)
-{
-
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_7B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-}
-
-/* USART6 init function */
-static void MX_USART6_UART_Init(void)
-{
-
-  huart6.Instance = USART6;
-  huart6.Init.BaudRate = 115200;
-  huart6.Init.WordLength = UART_WORDLENGTH_7B;
-  huart6.Init.StopBits = UART_STOPBITS_1;
-  huart6.Init.Parity = UART_PARITY_NONE;
-  huart6.Init.Mode = UART_MODE_TX_RX;
-  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart6) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-}
 /* FMC initialization function */
 static void MX_FMC_Init(void)
 {
@@ -1442,7 +1372,7 @@ void StartDefaultTask(void const * argument)
 	}
 	listen(socket_fd,5);
 	addr_size = sizeof(isa);
-	for(;;)
+	while(1)
 	{
 		struct dhcp *dhcp  =netif_dhcp_data(&gnetif);
 		uint32_t ipz =readIPSettings();
@@ -1459,16 +1389,12 @@ void StartDefaultTask(void const * argument)
 		sprintf(portbuffer," %d", (int) ntohs(isa.sin_port));
 		updateLCDStatus(connected,connected,sipbuffer,sportbuffer,ipbuffer,portbuffer);
 		state=waitingForHanshake;
-		HAL_NVIC_DisableIRQ(TIM8_UP_TIM13_IRQn);
-		HAL_NVIC_DisableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+		DisableTimers();
 		while(1)
 		{
 			rec_size = receieveFullPacket(accept_fd,(void*)data_buffer, sizeof (data_buffer), (struct sockaddr*)&sa, &fromlen); //recvfrom(accept_fd, (void*)data_buffer, sizeof (data_buffer), 0, (struct sockaddr*)&sa, &fromlen);
 			if (rec_size < 0)
-			{
-				fprintf(stderr, "%s\n", strerror(errno));
 				break;
-			}
 			handlePacket(accept_fd,data_buffer,rec_size);
 			if(state==disconnected)
 			{
@@ -1477,8 +1403,7 @@ void StartDefaultTask(void const * argument)
 				break;
 			}
 		}
-		HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
-		HAL_NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+		EnableTimers();
 		keyboardReleaseAll();
 		mouseReleaseAll();
 		close(accept_fd);
