@@ -10,7 +10,7 @@ HAL_StatusTypeDef writeEEPROMSettings(uint8_t mode, uint32_t ip,uint16_t port,ui
 	HAL_FLASH_Unlock();
 	FLASH_Erase_Sector(FLASH_SECTOR_4,VOLTAGE_RANGE);
 	HAL_FLASH_Lock();
-	writeModeSettings(mode);
+	writeModeSettings(0);
 	writePortSettings(port);
 	writeIPSettings(ip);
 	writeNetMaskSettings(mask);

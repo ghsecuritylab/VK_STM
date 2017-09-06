@@ -69,7 +69,7 @@
 
 /* USER CODE BEGIN Includes */
 extern State state;
-extern struct netif gnetif;
+//extern struct netif gnetif;
 TM_FONT_SIZE_t FontSize;
 /* USER CODE END Includes */
 
@@ -1363,7 +1363,7 @@ void StartDefaultTask(void const * argument)
 	}
 	memset(&sa, 0, sizeof(struct sockaddr_in));
 	sa.sin_family = AF_INET;
-	sa.sin_addr.s_addr = INADDR_ANY;//inet_addr(SENDER_IP_ADDR);
+	sa.sin_addr.s_addr = INADDR_ANY;
 	sa.sin_port = htons(readPortSettings());
 	if (bind(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1)
 	{
@@ -1374,13 +1374,13 @@ void StartDefaultTask(void const * argument)
 	addr_size = sizeof(isa);
 	while(1)
 	{
-		struct dhcp *dhcp  =netif_dhcp_data(&gnetif);
+		//struct dhcp *dhcp  =netif_dhcp_data(&gnetif);
 		uint32_t ipz =readIPSettings();
 		ipz =htonl(ipz);
-		sprintf(sipbuffer,"%s",readModeSettings()? inet_ntoa(dhcp->offered_ip_addr.addr):inet_ntoa(ipz));
+		sprintf(sipbuffer,"%s",inet_ntoa(ipz));
 		sprintf(sportbuffer," %d", (int) ntohs(sa.sin_port));
 		updateLCDStatus(connected,disconnected,sipbuffer,sportbuffer,"-","-");
-		accept_fd = accept(socket_fd, (struct sockaddr*)&isa,&addr_size);
+		accept_fd = accept(socket_fd, (struct sockaddr*)&isa,(socklen_t *)&addr_size);
 		if(accept_fd < 0)
 		{
 			printLCD("Socket accepting failed.");

@@ -20,14 +20,6 @@ extern TIM_HandleTypeDef htim13;
 extern TIM_HandleTypeDef htim14;
 
 
-static char serverStatus[] = "Server status: ";
-static  char clientStatus[] = "Client status: ";
-static char connectedStatus[] ="Connected";
-static  char waitingForClientStatus[] = "Waiting for a client";
-static char waitingForIPReleaseStatus[] = "Retrieving data from DHCP server";
-static  char disconnectedStatus[] = "Disconnected";
-
-
 void updateLCDStatus(State serverState, State clientState,  char *serverIP, char *serverPort,  char *clientIP, char* clientPort);
 void turnOnDisplay();
 void turnOffDisplay();

@@ -6,6 +6,11 @@
  */
 #include "lcdUpdate.h"
 
+static char serverStatus[] = "Server status: ";
+static  char clientStatus[] = "Client status: ";
+static char connectedStatus[] ="Connected";
+static  char disconnectedStatus[] = "Disconnected";
+
 volatile  bool on =1;
 volatile uint32_t screenTimer=0;
 volatile uint32_t resetTimer = 0;
@@ -34,7 +39,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(){
         	resetTimer++;
         	if(resetTimer>=RESET_TIMEOUT){
         		TM_LCD_DisplayOn();
-        		writeEEPROMSettings(1,0,21,0,0);
+        		writeEEPROMSettings(0,(3232235522),21,(4294967040),0);//
         		printLCD("Restored default settings. \nRestart pending...");
         		HAL_Delay(2000);
         		HAL_NVIC_SystemReset();
