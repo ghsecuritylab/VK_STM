@@ -76,9 +76,9 @@ struct netif gnetif;
 ip4_addr_t ipaddr;
 ip4_addr_t netmask;
 ip4_addr_t gw;
-/*uint8_t IP_ADDRESS[4];
+uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];
-uint8_t GATEWAY_ADDRESS[4];*/
+uint8_t GATEWAY_ADDRESS[4];
 /* USER CODE BEGIN 2 */
 
 /* USER CODE END 2 */
@@ -89,10 +89,10 @@ uint8_t GATEWAY_ADDRESS[4];*/
 void MX_LWIP_Init(void)
 {
 	  /* IP addresses initialization */
-	 /* IP_ADDRESS[0] = 192;
+	  IP_ADDRESS[0] = 192;
 	  IP_ADDRESS[1] = 168;
-	  IP_ADDRESS[2] = 2;
-	  IP_ADDRESS[3] = 116;
+	  IP_ADDRESS[2] = 0;
+	  IP_ADDRESS[3] = 2;
 	  NETMASK_ADDRESS[0] = 255;
 	  NETMASK_ADDRESS[1] = 255;
 	  NETMASK_ADDRESS[2] = 255;
@@ -100,37 +100,43 @@ void MX_LWIP_Init(void)
 	  GATEWAY_ADDRESS[0] = 0;
 	  GATEWAY_ADDRESS[1] = 0;
 	  GATEWAY_ADDRESS[2] = 0;
-	  GATEWAY_ADDRESS[3] = 0;*/
-  /* Initilialize the LwIP stack with RTOS */
-  tcpip_init( NULL, NULL );
-  /*P4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
-  IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
-  IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);*/
-  /* IP addresses initialization with DHCP (IPv4) */
-  ipaddr.addr = readIPSettings();
-  netmask.addr =readNetMaskSettings();
-  gw.addr = readGateWaySettings();
+	  GATEWAY_ADDRESS[3] = 0;
+/* Initilialize the LwIP stack with RTOS */
+tcpip_init( NULL, NULL );
+IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
+IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
+IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+/* IP addresses initialization with DHCP (IPv4) */
+ipaddr.addr =htonl (readIPSettings());
+netmask.addr =htonl(readNetMaskSettings());
+gw.addr =htonl(readGateWaySettings());
+#if LWIP_DHCP
+ipaddr.addr =0;
+netmask.addr =0;
+gw.addr =0;
+#endif
 
-  /* add the network interface (IPv4/IPv6) with RTOS */
-  netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
+/* add the network interface (IPv4/IPv6) with RTOS */
+netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
 
-  /* Registers the default network interface */
-  netif_set_default(&gnetif);
+/* Registers the default network interface */
+netif_set_default(&gnetif);
 
-  if (netif_is_link_up(&gnetif))
-  {
-    /* When the netif is fully configured this function must be called */
-    netif_set_up(&gnetif);
-  }
-  else
-  {
-    /* When the netif link is down this function must be called */
-    netif_set_down(&gnetif);
-  }
+if (netif_is_link_up(&gnetif))
+{
+  /* When the netif is fully configured this function must be called */
+  netif_set_up(&gnetif);
+}
+else
+{
+  /* When the netif link is down this function must be called */
+  netif_set_down(&gnetif);
+}
 
-  /* Start DHCP negotiation for a network interface (IPv4) */
-  if(readModeSettings()==dhcpMode)
+/* Start DHCP negotiation for a network interface (IPv4) */
+#if LWIP_DHCP
 	  while(dhcp_start(&gnetif)!= ERR_OK);
+#endif
 
 /* USER CODE BEGIN 3 */
 

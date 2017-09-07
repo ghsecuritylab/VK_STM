@@ -10,6 +10,10 @@ volatile  bool on =1;
 volatile uint32_t screenTimer=0;
 volatile uint32_t resetTimer = 0;
 char buffer[4];
+static char serverStatus[] = "Server status: ";
+static  char clientStatus[] = "Client status: ";
+static char connectedStatus[] ="Connected";
+static  char disconnectedStatus[] = "Disconnected";
 
 void TIM8_UP_TIM13_IRQHandler(){
     if (__HAL_TIM_GET_FLAG(&htim13, TIM_FLAG_UPDATE) != RESET)
@@ -34,7 +38,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(){
         	resetTimer++;
         	if(resetTimer>=RESET_TIMEOUT){
         		TM_LCD_DisplayOn();
-        		writeEEPROMSettings(1,0,21,0,0);
+        		writeEEPROMSettings(0,(3232235522),21,(4294967040),0);//
         		printLCD("Restored default settings. \nRestart pending...");
         		HAL_Delay(2000);
         		HAL_NVIC_SystemReset();
@@ -98,10 +102,11 @@ void updateLCDStatus(State serverState, State clientState,char *serverIP,char *s
 {
 	   TM_LCD_Fill(0x4321);
 	   TM_LCD_SetXY(0,0);
-	   if(readModeSettings())
+#if LWIP_DHCP
 		   TM_LCD_Puts("Mode: DHCP\n");
-	   else
+#else
 		   TM_LCD_Puts("Mode: STATIC\n");
+#endif
 	   TM_LCD_Puts(serverStatus);
 	   switch(serverState)
 	   {

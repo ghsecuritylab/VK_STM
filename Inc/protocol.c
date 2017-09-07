@@ -63,7 +63,7 @@ void handleIPChangeRequest(uint8_t *data, size_t size)
 	port |= ((data[6])| (data[7]<<8));
 	mask |= ((data[8])|(data[9]<<8)|(data[10]<<16)|(data[11]<<24));
 	gate |= ((data[12])|(data[13]<<8)|(data[14]<<16)|(data[15]<<24));
-	writeEEPROMSettings(data[1],ip,port,mask,gate);
+	writeEEPROMSettings(0,ip,port,mask,gate);
 }
 void handleMouseRequest(uint8_t *data, size_t size)
 {
